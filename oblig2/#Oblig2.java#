@@ -1,0 +1,257 @@
+/*
+ * Oblig 2 INF1010
+ * mathiapk
+ * Mathias Kallstrom
+ * gruppe 9
+ */
+
+import java.util.*;
+import java.io.*;
+
+//main. Kaller paa klassen datastruktur
+class Oblig2{
+    public static void main(String[] args){
+	Datastruktur d = new Datastruktur();
+	d.lagObjekter();
+    }
+}
+
+class Box<T>{
+    private int lengde;
+    private T [] samling = (T []) new Object[lengde];
+    private int antall;
+
+
+    Box(int lengde){
+	this.lengde = lengde;
+    }
+
+    public void settInn(T denne) {
+	samling[antall] = denne;
+	antall++;
+    }
+    public T taUt(){
+	antall--;
+	return samling[antall];
+    }
+}
+
+class Datastruktur {
+
+    public void lagObjekter(){
+	Person[] personer = new Person[7];
+	personer[0] = new Person("Mathias", "boker");
+	personer[1] = new Person("Stian", "plater");
+	personer[2] = new Person("John", "plater");
+	personer[3] = new Person("Martine", "begge");
+	personer[4] = new Person("Anniken", "begge");
+	personer[5] = new Person("Henrik", "begge");
+	personer[6] = new Person("Malin", "ingenting");
+
+	for(int i = 0;i<personer.length;i++){
+	    personer[i].skrivUtAltOmMeg();
+	}
+    }    
+}
+
+class Bok {
+    private String forfatter;
+    private String tittel;
+    private int utgivelsesAar;
+
+    Bok(String f, String t, int u){
+	this.forfatter = f;
+	this.tittel = t;
+	this.utgivelsesAar = u;
+    }
+}
+
+class Plate{
+    private String artist;
+    private String tittel;
+    private int antSpor;
+
+    Plate(String a, String t, int as){
+	this.artist = a;
+	this.tittel = t;
+	this.antSpor = as;
+    }
+}
+
+//Klassen "Person" inneholder alle metoder for aa knytte personobjektene sammen. 
+class Person{
+    private String navn;  
+    private Person[] kjenner;
+    private Person[] likerikke;
+    private Person forelsketi;
+    private Person sammenmed;
+    private String smlp;
+    private HashMap<String, Object> samleHash;
+        
+    Person(String navn, String smlp){
+	this.navn = navn;
+	this.smlp = smlp;
+    }
+    //Denne metoden brukes kun i utskrift, for aa hente navn til de ulike personobjektene
+    public String hentNavn(){
+    	return navn;
+    }
+    //Metode som sjekker om to personobjekter kjenner hverandre. Returnerer en boolsk verdi.
+    public boolean erKjentMed(Person p){
+	for(int i = 0;i<p.kjenner.length; i++){
+	    if(kjenner[i] == p){
+		return true;
+	    }
+	}
+	return false;
+    }
+    //Metode som sjekker og eventuelt legger til bekjentskaper mellom personobjektene. 
+    //Personobjektene legges da til i "kjenner-arrayet".
+    public void blirKjentMed(Person p){
+	if(navn.equals(p.navn)){
+	    System.out.println("Kan ikke bli kjent med seg selv");
+	} else if(erKjentMed(p)){
+	    System.out.println("Kjenner allerede denne personen");
+	}else {
+	    for(int i = 0;i<kjenner.length;i++){
+		if(kjenner[i] == null){
+		    kjenner[i] = p;
+		    break;
+		}
+	    }
+	}
+    }
+    //Gir et objekt til pekeren "forelsketi". Sjekker ogsaa om instansen er det samme som objektet som blir sjekket.
+    public void blirForelsketI(Person p) {
+	if(this != p){
+	    forelsketi = p;
+	} else {
+	    System.out.println("Kan ikke vaere forelsket i seg selv");
+	}  
+    }
+    //Samme som "blirKjentMed", men her legges objektet inn i "likerikke-arrayet".
+    //Sjekker ogsaa om objektet allerede ligger i arrayet.
+    public void blirUvennMed(Person p){
+	boolean finnes = true;
+	if(navn.equals(p.navn)){
+	    System.out.println("Kan ikke bli uvenn med seg selv");
+	}else{
+	    for(int i = 0;i<likerikke.length;i++){
+		if(likerikke[i] == p){
+		    System.out.println("Er allerede uvenn med denne personen");
+		}else{
+		    finnes = false;
+		}
+	    }
+	}
+	//Her legges personobjektet til i "likerikke-arrayet", dersom det ikke allerede er der.
+	if(!finnes){
+	    for(int i = 0;i<likerikke.length;i++){
+		if(likerikke[i] == null) {
+		    likerikke[i] = p;
+		    break;
+		}
+	    }
+	}
+    }
+    //Sjekker om et personobjeket er venn med et annet.
+    //Sjekker forst om de kjenner hverandre, via "kjenner-arrayet".
+    //Deretter sjekkes "likerikke-arrayet". Dersom personobjektet ligger i sistnevnte kan de ikke vaere venner.
+    public boolean erVennMed(Person p){
+	boolean venn = false;
+	for(int i = 0;i<p.kjenner.length;i++){
+	    if(kjenner[i] == p){
+		venn = true;
+	    }
+	    if(likerikke[i] == p){
+		venn = false;
+	    }
+	}
+	return venn;
+    }
+    //Sjekker metoden "erVennMed". Dersom de allerede er venner kan de ikke bli det paa nytt.
+    //Sjekker deretter "likerikke-arrayet". 
+    //Dersom personobjektet finnes der blir plassen i arrayet satt til null
+    public void blirVennMed(Person p){
+	if(!erVennMed(p)){
+	    for(int i = 0;i<likerikke.length;i++){
+		if(likerikke[i] == p){
+		    likerikke[i] = null;
+		}
+	    }
+	}
+    }
+    //Metode som skriver ut vennene for et bestemt personobjekt, fra metoden "hentVenner".
+    public void skrivUtVenner(){
+	System.out.println(hentVenner());
+    }
+    //Henter bestevenn som blir returnert som en string.
+    //Bestevenn er for enkelhetens skyld den kjenningen som ligger paa plass "0" i kjenner-arrayet.
+    public String hentBestevenner(){
+	return kjenner[0].navn;
+    }
+    //henter venner fra metoden "erVennMed". Legger til nanvene i en String og returnerer denne Stringen.
+    public String hentVenner(){
+	String venner = "";
+	for(int i = 0;i<kjenner.length;i++){
+	    if(erVennMed(kjenner[i])){
+		venner += kjenner[i].navn + " ";
+	    }
+	}
+	return venner;
+    }
+    //Returnerer antall venner for et personobjekt
+    //Sjekker metoden "erVennMed" og plusser "int antall" per venn.
+    public int antVenner(){
+	int antall = 0;
+	for(int i = 0;i<kjenner.length;i++){
+	    if(erVennMed(kjenner[i]))
+		antall++;
+	}
+	return antall;
+    }
+    //Skriver ut alle navn til objekter som befinner seg i "kjenner-arrayet".
+    public void skrivUtKjenninger(){
+	for (Person p: kjenner){
+	    if (p!=null){
+		System.out.print(p.hentNavn() + " ");
+	    }
+	}
+	System.out.println("");
+    }
+    //Samme som metoden over, men for "likerikke-arrayet".
+    public void skrivUtLikerIkke(){
+	for (Person p: likerikke) {
+	    if (p!=null){
+		System.out.print(p.hentNavn() + " ");
+	    }
+	}
+	System.out.println("");
+    }
+    //Her hentes og samles all informasjon om personobjektet, fOr det skrives ut. 
+    //Denne metoden bruker "skrivUtKjenninger" og "skrivUtLikerIkke".
+    //Denne metoden skriver altsaa ut alle relasjoner for et personobjekt. 
+    public void skrivUtAltOmMeg(){
+	System.out.println();
+	
+    }
+    
+    public void samlerAv(String smlp, int ant) {
+	if(smlp.equals("boker")){
+	    samleHash.put(smlp, new Box<Bok>(ant));	    
+	}else if(smlp.equals("plater")){
+	    samleHash.put(smlp, new Box<Plate>(ant));
+	}else if(smlp.equals("begge")){
+		samleHash.put(smlp, new Box<Bok>(ant));
+		samleHash.put(smlp, new Box<Plate>(ant));
+	}
+    }
+
+    public void megetInteressertI(String artist){
+
+    }
+    
+    public void megetInteressertI(int eldreEnn){
+
+    }
+}

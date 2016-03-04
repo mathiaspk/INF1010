@@ -1,0 +1,228 @@
+/*
+ * Oblig 3 INF1010
+ * mathiapk
+ * Mathias Kallstrom
+ * gruppe 9
+ */
+
+import java.util.*;
+import java.io.*;
+
+//main. Kaller paa klassen datastruktur
+class Oblig3{
+    public static void main(String[] args){
+	Testklasse t = new Testklasse();
+	t.Test();
+
+    }
+}
+
+class Testklasse{
+    public void Test(){
+	ListeAvPersoner l = new ListeAvPersoner();
+	Personer p = new Personer();
+	GaveLager gavelager = new GaveLager();
+
+	//l.settInnIStarten(p.hentPerson());
+	//l.settInnEtter(p.hentPerson());
+	//l.settInn
+	//	for(int i = 0;i<p.hentPersonnavn().length;i++){
+	    p.hentPerson().skrivUtAltOmMeg();
+	    //}
+    }	    
+}
+
+class Person{
+    private String navn;  
+    private String smlp;
+    private Person[] kjenner = new Person[100];
+    private Person[] likerikke = new Person[10];
+    private Person forelsketi;
+    private Person sammenmed;
+    private Gave[] mineGaver;
+    public Person neste;
+    private int antGaver = 0;
+            
+    Person(String navn){
+	this.navn = navn;
+    }
+
+    public String hentNavn(){
+	return navn;
+    }
+
+    public boolean erKjentMed(Person p){
+	for(int i = 0;i<p.kjenner.length;i++){
+	    if(kjenner[i] == p){
+		return true;
+	    }
+	}return false;
+    }
+
+    public void blirKjentMed(Person p){
+	if(navn.equals(p.navn)){
+	    System.out.println("Kan ikke bli kjent med seg selv");
+	}else if(erKjentMed(p)){
+	    System.out.println("Kjenner allerede denne personen");
+	}else{
+	    for(int i = 0;i<kjenner.length;i++){
+		if(kjenner[i] == null){
+		    kjenner[i] = p;
+		    break;
+		}
+	    }
+	}
+    }
+
+    public void blirForelsketI(Person p) {
+	boolean misliker = false;
+        if(this != p){
+	    for(int i = 0;i<likerikke.length;i++){
+		if(likerikke[i] == p){
+		    misliker = true;
+		}
+	    }
+	    if(!misliker){
+		forelsketi = p;
+	    }
+        } else {
+            System.out.println("Kan ikke vaere forelsket i seg selv");
+        }
+    }
+
+    public void blirSammenMed(Person p){
+	if(navn.equals(p.navn)){
+	    System.out.println("Kan ikke bli sammen med seg selv");
+	}else{
+	    sammenmed = p;
+	    p.sammenmed = this;
+	}
+    }
+
+    public void blirUvennMed(Person p){
+	boolean finnes = true;
+	if(navn.equals(p.navn)){
+	    System.out.println("Kan ikke bli uvenn med seg selv");
+	}else{
+	    for(int i = 0;i<likerikke.length;i++){
+		if(likerikke[i] == p){
+		    System.out.println("Er allerede uvenn med denne personen");
+		    break;
+		}else{
+		    finnes = false;
+		}
+	    }
+	}if(!finnes){
+	    for(int i = 0;i<likerikke.length;i++){
+		if(likerikke[i] == null){
+		    likerikke[i] = p;
+		    break;
+		}
+	    }
+	}
+    }
+
+    public boolean erVennMed(Person p){
+	boolean venn = false;
+	for(int i = 0;i<p.kjenner.length;i++){
+	    if(kjenner[i] == p){
+		venn = true;
+	    }
+	    if(likerikke[i] == p){
+		venn = false;
+	    }
+	}
+	return venn;
+    }
+    
+    public void blirVennMed(Person p){
+	if(!erVennMed(p)){
+	    for(int i = 0;i<likerikke.length;i++){
+		if(likerikke[i] == p){
+		    likerikke[i] = null;
+		}
+	    }
+	}
+    }
+
+    public void skrivUtVenner(){
+	System.out.println(hentVenner());
+    }
+    
+    public String hentBestevenner(){
+	return kjenner[0].navn;
+    }
+
+    public String hentVenner(){
+	String venner = "";
+	for(int i = 0;i<kjenner.length;i++){
+	    if(erVennMed(kjenner[i])){
+		venner += kjenner[i].navn + "";
+	    }
+	}
+	return venner;
+    }
+    
+    public int antVenner(){
+	int antall = 0;
+	for(int i = 0;i<kjenner.length;i++){
+	    if(erVennMed(kjenner[i])){
+		antall++;
+	    }
+	}
+	return antall;
+    }
+
+    public Gave hentGaver(int i){
+	return mineGaver[i];
+    }
+
+    public void skrivUtKjenninger(){
+	for(Person p: kjenner){
+	    if(p!=null){
+		System.out.println(p.hentNavn() + " ");
+	    }
+	}
+    }
+
+    public void skrivUtLikerIkke(){
+	for(Person p: likerikke){
+	    if(p!=null){
+		System.out.println(p.hentNavn() + " ");
+	    }
+	}
+    }
+    
+    public void skrivUtAltOmMeg(){
+	boolean mislikerNoen = false;
+	if(sammenmed!=null){
+	    System.out.print(navn + " er sammen med: ");
+	    System.out.println(sammenmed.navn);
+	}else{
+	    System.out.print(navn + " er singel, ");
+	    if(forelsketi != null){
+		System.out.println("men er forelsket i " + forelsketi.navn);
+	    }else{
+		System.out.println("og er heller ikke forelsket i noen.");
+	    }
+	}
+	System.out.println(navn + " sine gaver: ");
+	for(int i = 0;i<mineGaver.length;i++){
+	    System.out.println(mineGaver[i]);
+	}
+    }
+
+    Gave vilDuHaGaven(Gave nyGave){
+	if(smlp == nyGave.kategori()){
+	    mineGaver[antGaver] = nyGave;
+	    return null;
+	}
+	return nyGave;
+    }
+
+    //Setter opp bibliotek eller platesamling utifra hva personen samler paa
+    public void samlerAv(String smlp, int lengde) {
+	mineGaver = new Gave[lengde];
+	this.smlp = smlp;
+    }    
+}

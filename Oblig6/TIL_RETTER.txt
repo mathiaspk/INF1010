@@ -1,0 +1,26 @@
+Mathiapk (Mathias Källström)
+
+«Hovedfilen» min heter Oblig6.java.
+Det er altså ikke Sort.java som skal kjøres fra terminalen.
+
+Programmet fungerer som det skal.
+
+1. PARALLELLITET:
+
+ - Alle sorteringstrådene kan kjøre parallellt, det samme gjelder mergetrådene.
+   Den eneste operasjonen som er «synchronized» er metoden som sjekker om det 
+   allerede er et sortert array/legger inn et sortert array i «mergepoolen». 
+   I tillegg vil innlesing og skriving ikke kunne kjøres parallellt med andre 
+   operasjoner.
+
+2. Kjøretiden:
+
+ - Kjøretiden for «sowpods.txt» med 128 tråder er ca 3 sekunder. 
+   Ved dobling av antall tråder blir kjøretiden omtrent halvvert.
+   Dersom jeg kjører med 1024 tråder blir tiden ca 700 ms. 
+   Ved flere tråder enn dette øker kjøretiden.
+
+   Kjøretiden for «names.txt» med 128 tråder er 39 ms.
+   Vi ser da at i forhold til «sowpods.txt», som har ca 50 ganger så mange ord,
+   kjører names ca 80 ganger så raskt.
+
